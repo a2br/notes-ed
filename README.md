@@ -9,21 +9,21 @@ Vous devez avoir Python 3 installé ainsi que pip (normallement installé en mê
 La méthode habituelle, si Git est installé :
 
 ```console
->> git clone https://github.com/a2br/notes-ed.git
->> cd ./notes-ed
+$ git clone https://github.com/a2br/notes-ed.git
+$ cd ./notes-ed
 ```
 
 Ou n'importe quelle autre manière. Je recommande d'installer Git et de suivre les instructions ci-dessus. 
 Une fois le repo installé et une fois que vous êtes dedans, installez les modules requis.
 
 ```console
->> pip install -r ./requirements.txt
+$ pip install -r ./requirements.txt
 ```
 
 ### Usage
 Tout simplement.
 ```console
->> py ./main.py
+$ py ./main.py
 Identifiant: 
 Mot de passe: 
 ```

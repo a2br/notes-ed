@@ -8,9 +8,12 @@ import locale
 
 from requests import request as req
 from rich import print
+from rich.console import Console
+from rich.table import Table
 import inquirer
 
 locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
+console = Console()
 
 # Crée un menu de sélection
 def choose(message: str, choices: list):
@@ -82,6 +85,7 @@ def handle_notes(data):
         matieres = periode['ensembleMatieres']['disciplines']
         notes_periode = 0
         diviseur_periode = 0
+        moyenne_matieres = {}
 
         for matiere in matieres:
             notes_matiere = 0
@@ -94,12 +98,35 @@ def handle_notes(data):
                                  locale.atof(note['coef'])
                 diviseur_matiere += locale.atof(note['coef'])
 
+            moyenne_matiere = None
+
             if diviseur_matiere:
-                notes_periode += (notes_matiere / diviseur_matiere) * float(matiere['coef'])
+                moyenne_matiere = (notes_matiere / diviseur_matiere)
+                notes_periode += moyenne_matiere * float(matiere['coef'])
                 diviseur_periode += float(matiere['coef'])
+
+            moyenne_matieres[matiere['codeMatiere']] = {
+                'moyenne': moyenne_matiere if diviseur_matiere else None,
+                'rang': matiere['rang'],
+                'coef': matiere['coef']
+            }
+
         if diviseur_periode:
+            # Création du tableau
+            table = Table(title=periode['periode'])
+            table.add_column("Matière", style='cyan', justify='left')
+            table.add_column("Coef", style='white', justify='center')
+            table.add_column("Moyenne", style='magenta', justify='center')
+            table.add_column("Rang", style='green', justify='right')
+
+            for codeMatiere in moyenne_matieres:
+                matiere = moyenne_matieres[codeMatiere]
+                table.add_row(codeMatiere, str(matiere['coef']), str(round(matiere['moyenne']*20, 1) if matiere['moyenne'] else None), f"#{str(matiere['rang']).zfill(2)}")
             moyenne_periode = notes_periode / diviseur_periode
             print(f"{periode['periode']} : {moyenne_periode * 20}/20")
+            table.add_row("GENERAL", "0", str(round(moyenne_periode*20, 1)), "#00", style='red')
+            console.print(table)
+
 
 def main():
     username = input("Identifiant: ")

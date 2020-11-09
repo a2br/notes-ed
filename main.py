@@ -94,9 +94,12 @@ def handle_notes(data):
             notesM = list(filter(lambda note: (note['codePeriode'] == periode['idPeriode']) and
                                               (note['codeMatiere'] == matiere['codeMatiere']), notes))
             for note in notesM:
-                notes_matiere += (locale.atof(note['valeur']) / locale.atof(note['noteSur'])) * \
-                                 locale.atof(note['coef'])
-                diviseur_matiere += locale.atof(note['coef'])
+                try:
+                    notes_matiere += (locale.atof(note['valeur']) / locale.atof(note['noteSur'])) * \
+                                     locale.atof(note['coef'])
+                    diviseur_matiere += locale.atof(note['coef'])
+                except:
+                    pass
 
             moyenne_matiere = None
 
@@ -121,7 +124,9 @@ def handle_notes(data):
 
             for codeMatiere in moyenne_matieres:
                 matiere = moyenne_matieres[codeMatiere]
-                table.add_row(codeMatiere, str(matiere['coef']), str(round(matiere['moyenne']*20, 1) if matiere['moyenne'] else None), f"#{str(matiere['rang']).zfill(2)}")
+                table.add_row(codeMatiere, str(matiere['coef']),
+                              str(round(matiere['moyenne']*20, 1) if matiere['moyenne'] else None),
+                              f"#{str(matiere['rang']).zfill(2)}")
             moyenne_periode = notes_periode / diviseur_periode
             print(f"{periode['periode']} : {moyenne_periode * 20}/20")
             table.add_row("GENERAL", "0", str(round(moyenne_periode*20, 1)), "#00", style='red')

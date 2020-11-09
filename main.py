@@ -2,16 +2,17 @@
 # Par Anatole DEBIERRE
 #
 
-# Le code n'est pas achevé.
 
-import sys
 from getpass import getpass
+import locale
 
 from requests import request as req
 from rich import print
 import inquirer
 
+locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
 
+# Crée un menu de sélection
 def choose(message: str, choices: list):
     questions = [
         inquirer.List('a', message, choices)
@@ -19,7 +20,7 @@ def choose(message: str, choices: list):
     answer = inquirer.prompt(questions)['a']
     return answer
 
-
+# Se connecte
 def login(username: str, password: str, token: str = None):
     payload = 'data={ "identifiant": "'+username + \
         '", "motdepasse": "'+password+'" }'
@@ -36,7 +37,7 @@ def login(username: str, password: str, token: str = None):
             print("[reverse bold red]Une erreur inconnue est survenue.[/]")
         exit()
 
-
+# Sélectionne ou demande le compte à retourner
 def select_account(accounts: list):
     # Définit les comptes de type E
     e_accounts = list(filter(lambda account: bool(
@@ -64,7 +65,7 @@ def select_account(accounts: list):
         str(account['id']) == choice[0:4]), e_accounts))
     return account
 
-
+# Récupère les notes
 def fetch_notes(account, token: str):
     payload = 'data={"token": "' + token + '"}'
     response = req("POST", "https://api.ecoledirecte.com/v3/eleves/" +
@@ -72,15 +73,33 @@ def fetch_notes(account, token: str):
     token = response['token'] or token
     return response, token
 
-
+# Affiche la moyenne pour chaque période (et chaque matière)
 def handle_notes(data):
-    matieres = []
-    for periode in data['periodes']:
-        for matiere in periode['ensembleMatieres']['disciplines']:
-            if not matieres.index(matiere['codeMatiere']):
-                matieres.append(matiere['codeMatiere'])
-    return matieres
+    periodes = data['periodes']
+    notes = data['notes']
+    # notes_annee = 0
+    for periode in periodes:
+        matieres = periode['ensembleMatieres']['disciplines']
+        notes_periode = 0
+        diviseur_periode = 0
 
+        for matiere in matieres:
+            notes_matiere = 0
+            diviseur_matiere = 0
+            # Chercher des notes de MATIERE dans PERIODE
+            notesM = list(filter(lambda note: (note['codePeriode'] == periode['idPeriode']) and
+                                              (note['codeMatiere'] == matiere['codeMatiere']), notes))
+            for note in notesM:
+                notes_matiere += (locale.atof(note['valeur']) / locale.atof(note['noteSur'])) * \
+                                 locale.atof(note['coef'])
+                diviseur_matiere += locale.atof(note['coef'])
+
+            if diviseur_matiere:
+                notes_periode += (notes_matiere / diviseur_matiere) * float(matiere['coef'])
+                diviseur_periode += float(matiere['coef'])
+        if diviseur_periode:
+            moyenne_periode = notes_periode / diviseur_periode
+            print(f"{periode['periode']} : {moyenne_periode * 20}/20")
 
 def main():
     username = input("Identifiant: ")
@@ -108,4 +127,4 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        sys.exit(0)
+        exit()

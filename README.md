@@ -19,7 +19,11 @@ Une fois le repo installé et une fois que vous êtes dedans, installez les modu
 ```console
 $ pip install -r ./requirements.txt
 ```
-
+### Mettre à jour
+Pour mettre votre clone à jour,
+```console
+$ git pull
+```
 ### Usage
 Tout simplement.
 ```console

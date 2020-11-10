@@ -80,14 +80,16 @@ def fetch_notes(account, token: str):
 def handle_notes(data):
     periodes = data['periodes']
     notes = data['notes']
-    # notes_annee = 0
+
     for periode in periodes:
         matieres = periode['ensembleMatieres']['disciplines']
+        notes_list = []
         notes_periode = 0
         diviseur_periode = 0
         moyenne_matieres = {}
 
         for matiere in matieres:
+            notes_list_matiere = []
             notes_matiere = 0
             diviseur_matiere = 0
             # Chercher des notes de MATIERE dans PERIODE
@@ -98,21 +100,26 @@ def handle_notes(data):
                     notes_matiere += (locale.atof(note['valeur']) / locale.atof(note['noteSur'])) * \
                                      locale.atof(note['coef'])
                     diviseur_matiere += locale.atof(note['coef'])
+                    notes_list.append(locale.atof(note['valeur']) / locale.atof(note['noteSur']))
+                    notes_list_matiere.append(locale.atof(note['valeur']) / locale.atof(note['noteSur']))
                 except:
                     pass
 
             moyenne_matiere = None
+            notes_list_matiere.sort()
 
             if diviseur_matiere:
                 moyenne_matiere = (notes_matiere / diviseur_matiere)
                 notes_periode += moyenne_matiere * float(matiere['coef'])
                 diviseur_periode += float(matiere['coef'])
-
             moyenne_matieres[matiere['codeMatiere']] = {
                 'moyenne': moyenne_matiere if diviseur_matiere else None,
+                'mediane': notes_list_matiere[round((len(notes_list_matiere) - 1) / 2)] if notes_list_matiere else None,
                 'rang': matiere['rang'],
                 'coef': matiere['coef']
             }
+
+        notes_list.sort()
 
         if diviseur_periode:
             # Création du tableau
@@ -120,16 +127,20 @@ def handle_notes(data):
             table.add_column("Matière", style='cyan', justify='left')
             table.add_column("Coef", style='white', justify='center')
             table.add_column("Moyenne", style='magenta', justify='center')
+            table.add_column("Médiane", style='hot_pink', justify='center')
             table.add_column("Rang", style='green', justify='right')
 
             for codeMatiere in moyenne_matieres:
                 matiere = moyenne_matieres[codeMatiere]
-                table.add_row(codeMatiere, str(matiere['coef']),
-                              str(round(matiere['moyenne']*20, 1) if matiere['moyenne'] else None),
-                              f"#{str(matiere['rang']).zfill(2)}")
+                if codeMatiere:
+                    table.add_row(codeMatiere, str(matiere['coef']),
+                                  str(round(matiere['moyenne']*20, 1) if matiere['moyenne'] else None).zfill(4),
+                                  str(round(matiere['mediane'] * 20, 1) if matiere['mediane'] else None).zfill(4),
+                                  f"#{str(matiere['rang']).zfill(2)}")
             moyenne_periode = notes_periode / diviseur_periode
-            print(f"{periode['periode']} : {moyenne_periode * 20}/20")
-            table.add_row("GENERAL", "0", str(round(moyenne_periode*20, 1)), "#00", style='red')
+            # print(f"{periode['periode']} : {moyenne_periode * 20}/20")
+            table.add_row("GENERAL", "0", str(round(moyenne_periode*20, 1)),
+                          str(round((notes_list[round((len(notes_list) - 1) / 2)]) * 20, 2)), "#00", style='red')
             console.print(table)
 
 

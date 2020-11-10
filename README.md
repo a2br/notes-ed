@@ -30,8 +30,6 @@ $ git pull
 Le script ne marche qu'avec les comptes `E` (Eleve). Les comptes familles ne sont pas supportés.
 ```console
 $ py ./main.py
-Identifiant: 
-Mot de passe: 
 ```
 ![Démo](https://i.ibb.co/6rn35q2/notes-ed-demo.gif)
 

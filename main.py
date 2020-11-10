@@ -26,7 +26,7 @@ def choose(message: str, choices: list):
 # Se connecte
 def login(username: str, password: str, token: str = None):
     payload = 'data={ "identifiant": "'+username + \
-        '", "motdepasse": "'+password+'" }'
+        '", "motdepasse": "'+password+'", "acceptationCharte": true }'
     try:
         response = req(
             "POST", "https://api.ecoledirecte.com/v3/login.awp", data=payload).json()
@@ -152,7 +152,7 @@ def main():
         exit()
     print("Traitement des notes...")
     handle_notes(notesRes['data'])
-    print("~END~")
+    print("Terminé.")
 
 
 if __name__ == "__main__":

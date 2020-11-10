@@ -4,9 +4,9 @@ connexion à EcoleDirecte.
 
 ## Utilisation
 ### Pré-requis
-Vous devez avoir Python 3 installé ainsi que pip (normallement installé en même temps que Python).
+Vous devez avoir Python 3 installé ainsi que pip (installé en même temps que Python).
 ### Installation
-La méthode habituelle, si Git est installé :
+La méthode habituelle.
 
 ```console
 $ git clone https://github.com/a2br/notes-ed.git
@@ -17,7 +17,7 @@ Ou n'importe quelle autre manière. Je recommande d'installer Git et de suivre l
 Une fois le repo installé et une fois que vous êtes dedans, installez les modules requis.
 
 ```console
-$ pip install -r ./requirements.txt
+$ py -m pip install -r .\requirements.txt
 ```
 
 ### Usage

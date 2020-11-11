@@ -20,7 +20,7 @@ def choose(message: str, choices: list):
     return answer
 
 
-# Se connecte
+# Se connecte à EcoleDirecte
 def login(username: str, password: str, token: str = None):
     payload = 'data={ "identifiant": "' + username + \
               '", "motdepasse": "' + password + '", "acceptationCharte": true }'
@@ -40,10 +40,10 @@ def login(username: str, password: str, token: str = None):
 
 # Sélectionne ou demande le compte à retourner
 def select_account(accounts: list):
-    # Définit les comptes de type E
+    # Filtre les comptes de type E
     e_accounts = list(filter(lambda account: bool(
         account['typeCompte'] == "E"), accounts))
-    # Met en page les futurs choix
+    # Met en page les choix
     choices = list(
         map(lambda account: (str(account['id']) + " | " + account['prenom'] + " " + account['nom']),
             e_accounts))
@@ -56,8 +56,10 @@ def select_account(accounts: list):
     elif len(choices) == 1:
         choice = choices[0]
     if not choice:
-        print("[reverse bold red]Aucun compte ne semble disponible[/]")
+        # Pas de compte supporté
+        print("[reverse bold red]Aucun compte compatible trouvé[/]")
         if next(filter(lambda account: account['typeCompte'] == "1", accounts), None):
+            # Compte famille détecté
             print("[red]Le compte connecté semble être un compte Famille. " +
                   "Essayez de vous connecter avec un compte Elève ![/]")
         exit()
@@ -83,16 +85,15 @@ def handle_notes(data):
 
     for periode in periodes:
         matieres = periode['ensembleMatieres']['disciplines']
-        notes_list = []
-        notes_periode = 0
-        diviseur_periode = 0
-        moyenne_matieres = {}
+        notes_list = []  # Liste des notes (=> calcul de la médiane)
+        notes_periode = 0  # Somme des notes de la période
+        diviseur_periode = 0  # Somme des coefficients
+        infos_matieres = {}
 
         for matiere in matieres:
             notes_list_matiere = []
             notes_matiere = 0
             diviseur_matiere = 0
-            # Chercher des notes de MATIERE dans PERIODE
             notesM = list(filter(lambda note: (note['codePeriode'] == periode['idPeriode']) and
                                               (note['codeMatiere'] == matiere['codeMatiere']), notes))
             for note in notesM:
@@ -112,7 +113,7 @@ def handle_notes(data):
                 moyenne_matiere = (notes_matiere / diviseur_matiere)
                 notes_periode += moyenne_matiere * float(matiere['coef'])
                 diviseur_periode += float(matiere['coef'])
-            moyenne_matieres[matiere['codeMatiere']] = {
+            infos_matieres[matiere['codeMatiere']] = {
                 'moyenne': moyenne_matiere if diviseur_matiere else None,
                 'mediane': notes_list_matiere[round((len(notes_list_matiere) - 1) / 2)] if notes_list_matiere else None,
                 'rang': matiere['rang'],
@@ -130,15 +131,14 @@ def handle_notes(data):
             table.add_column("Médiane", style='hot_pink', justify='center')
             table.add_column("Rang", style='green', justify='right')
 
-            for codeMatiere in moyenne_matieres:
-                matiere = moyenne_matieres[codeMatiere]
+            for codeMatiere in infos_matieres:
+                matiere = infos_matieres[codeMatiere]
                 if codeMatiere:
                     table.add_row(codeMatiere, str(matiere['coef']),
                                   str(round(matiere['moyenne'] * 20, 1) if matiere['moyenne'] else None).zfill(4),
                                   str(round(matiere['mediane'] * 20, 1) if matiere['mediane'] else None).zfill(4),
                                   f"#{str(matiere['rang']).zfill(2)}")
             moyenne_periode = notes_periode / diviseur_periode
-            # print(f"{periode['periode']} : {moyenne_periode * 20}/20")
             table.add_row("GENERAL", "0", str(round(moyenne_periode * 20, 1)),
                           str(round((notes_list[round((len(notes_list) - 1) / 2)]) * 20, 2)), "#00", style='red')
             console.print(table)

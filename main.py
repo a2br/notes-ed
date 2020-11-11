@@ -10,6 +10,7 @@ import inquirer
 locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
 console = Console()
 
+
 # Crée un menu de sélection
 def choose(message: str, choices: list):
     questions = [
@@ -18,10 +19,11 @@ def choose(message: str, choices: list):
     answer = inquirer.prompt(questions)['a']
     return answer
 
+
 # Se connecte
 def login(username: str, password: str, token: str = None):
-    payload = 'data={ "identifiant": "'+username + \
-        '", "motdepasse": "'+password+'", "acceptationCharte": true }'
+    payload = 'data={ "identifiant": "' + username + \
+              '", "motdepasse": "' + password + '", "acceptationCharte": true }'
     try:
         response = req(
             "POST", "https://api.ecoledirecte.com/v3/login.awp", data=payload).json()
@@ -34,6 +36,7 @@ def login(username: str, password: str, token: str = None):
         else:
             print("[reverse bold red]Une erreur inconnue est survenue.[/]")
         exit()
+
 
 # Sélectionne ou demande le compte à retourner
 def select_account(accounts: list):
@@ -60,8 +63,9 @@ def select_account(accounts: list):
         exit()
 
     account = next(filter(lambda account: (
-        str(account['id']) == choice[0:4]), e_accounts))
+            str(account['id']) == choice[0:4]), e_accounts))
     return account
+
 
 # Récupère les notes
 def fetch_notes(account, token: str):
@@ -70,6 +74,7 @@ def fetch_notes(account, token: str):
                    str(account['id']) + "/notes.awp?verbe=get&", data=payload).json()
     token = response['token'] or token
     return response, token
+
 
 # Affiche la moyenne pour chaque période (et chaque matière)
 def handle_notes(data):
@@ -129,12 +134,12 @@ def handle_notes(data):
                 matiere = moyenne_matieres[codeMatiere]
                 if codeMatiere:
                     table.add_row(codeMatiere, str(matiere['coef']),
-                                  str(round(matiere['moyenne']*20, 1) if matiere['moyenne'] else None).zfill(4),
+                                  str(round(matiere['moyenne'] * 20, 1) if matiere['moyenne'] else None).zfill(4),
                                   str(round(matiere['mediane'] * 20, 1) if matiere['mediane'] else None).zfill(4),
                                   f"#{str(matiere['rang']).zfill(2)}")
             moyenne_periode = notes_periode / diviseur_periode
             # print(f"{periode['periode']} : {moyenne_periode * 20}/20")
-            table.add_row("GENERAL", "0", str(round(moyenne_periode*20, 1)),
+            table.add_row("GENERAL", "0", str(round(moyenne_periode * 20, 1)),
                           str(round((notes_list[round((len(notes_list) - 1) / 2)]) * 20, 2)), "#00", style='red')
             console.print(table)
 

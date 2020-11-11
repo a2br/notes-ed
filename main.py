@@ -1,8 +1,3 @@
-#
-# Par Anatole DEBIERRE
-#
-
-
 from getpass import getpass
 import locale
 

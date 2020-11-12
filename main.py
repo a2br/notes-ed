@@ -168,7 +168,7 @@ def main():
     print("Traitement des notes...")
     handle_notes(notesRes['data'])
     console.input(
-        "[reverse cyan]Terminé.[/] Pressez [reverse]ENTER[/] pour quitter.", password=True)
+        "[reverse green]Terminé.[/] Pressez [reverse]ENTER[/] pour quitter.", password=True)
 
 
 if __name__ == "__main__":

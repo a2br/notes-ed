@@ -27,7 +27,7 @@ $ git pull
 
 ## Utilisation
 
-Le script ne marche qu'avec les comptes `E` (Eleve). Les comptes familles ne sont pas supportés.
+Le script ne marche qu'avec les comptes `E` (Eleve). Les comptes familles ne sont pas supportés. Ouvrez le script depuis le terminal ou en cliquant sur l'icône dans le File Explorer.
 ```console
 $ py ./main.py
 ```

@@ -65,7 +65,7 @@ def select_account(accounts: list):
         exit()
 
     account = next(filter(lambda account: (
-            str(account['id']) == choice[0:4]), e_accounts))
+        str(account['id']) == choice[0:4]), e_accounts))
     return account
 
 
@@ -99,10 +99,12 @@ def handle_notes(data):
             for note in notesM:
                 try:
                     notes_matiere += (locale.atof(note['valeur']) / locale.atof(note['noteSur'])) * \
-                                     locale.atof(note['coef'])
+                        locale.atof(note['coef'])
                     diviseur_matiere += locale.atof(note['coef'])
-                    notes_list.append(locale.atof(note['valeur']) / locale.atof(note['noteSur']))
-                    notes_list_matiere.append(locale.atof(note['valeur']) / locale.atof(note['noteSur']))
+                    notes_list.append(locale.atof(
+                        note['valeur']) / locale.atof(note['noteSur']))
+                    notes_list_matiere.append(locale.atof(
+                        note['valeur']) / locale.atof(note['noteSur']))
                 except:
                     pass
 
@@ -135,8 +137,10 @@ def handle_notes(data):
                 matiere = infos_matieres[codeMatiere]
                 if codeMatiere:
                     table.add_row(codeMatiere, str(matiere['coef']),
-                                  str(round(matiere['moyenne'] * 20, 1) if matiere['moyenne'] else None).zfill(4),
-                                  str(round(matiere['mediane'] * 20, 1) if matiere['mediane'] else None).zfill(4),
+                                  str(round(
+                                      matiere['moyenne'] * 20, 1) if matiere['moyenne'] else None).zfill(4),
+                                  str(round(
+                                      matiere['mediane'] * 20, 1) if matiere['mediane'] else None).zfill(4),
                                   f"#{str(matiere['rang']).zfill(2)}")
             moyenne_periode = notes_periode / diviseur_periode
             table.add_row("GENERAL", "0", str(round(moyenne_periode * 20, 1)),
@@ -163,7 +167,8 @@ def main():
         exit()
     print("Traitement des notes...")
     handle_notes(notesRes['data'])
-    print("Terminé.")
+    console.input(
+        "[reverse cyan]Terminé.[/] Pressez [reverse]ENTER[/] pour quitter.", password=True)
 
 
 if __name__ == "__main__":

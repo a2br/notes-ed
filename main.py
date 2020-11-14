@@ -58,10 +58,7 @@ def select_account(accounts: list):
     if not choice:
         # Pas de compte supporté
         print("[reverse bold red]Aucun compte compatible trouvé[/]")
-        if next(filter(lambda account: account['typeCompte'] == "1", accounts), None):
-            # Compte famille détecté
-            print("[red]Le compte connecté semble être un compte Famille. " +
-                  "Essayez de vous connecter avec un compte Elève ![/]")
+        print("[red]Essayez de vous connecter avec un compte Elève.[/]")
         exit()
 
     account = next(filter(lambda account: (

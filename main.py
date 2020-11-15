@@ -11,7 +11,13 @@ locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
 console = Console()
 
 
+def calm_exit():
+    console.input(password=True)
+    exit()
+
 # Crée un menu de sélection
+
+
 def choose(message: str, choices: list):
     questions = [
         inquirer.List('a', message, choices)
@@ -35,7 +41,7 @@ def login(username: str, password: str, token: str = None):
             print("[red]Vérifiez votre connexion Internet.[/]")
         else:
             print("[reverse bold red]Une erreur inconnue est survenue.[/]")
-        exit()
+        calm_exit()
 
 
 # Sélectionne ou demande le compte à retourner
@@ -59,7 +65,7 @@ def select_account(accounts: list):
         # Pas de compte supporté
         print("[reverse bold red]Aucun compte compatible trouvé[/]")
         print("[red]Essayez de vous connecter avec un compte Elève.[/]")
-        exit()
+        calm_exit()
 
     account = next(filter(lambda account: (
         str(account['id']) == choice[0:4]), e_accounts))
@@ -152,7 +158,7 @@ def main():
     loginRes, token = login(username, password)
     if not token:
         print(loginRes['message'])
-        exit()
+        calm_exit()
 
     account = select_account(loginRes['data']['accounts'])
     print(f"[blue]Bonjour, [bold]{account['prenom']}[/].[/]")
@@ -161,11 +167,11 @@ def main():
     notesRes, token = fetch_notes(account, token)
     if notesRes['code'] != 200:
         print(notesRes['message'])
-        exit()
+        calm_exit()
     print("Traitement des notes...")
     handle_notes(notesRes['data'])
-    console.input(
-        "[reverse green]Terminé.[/] Pressez [reverse]ENTER[/] pour quitter.", password=True)
+    print("[reverse green]Terminé.[/] Pressez [reverse]ENTER[/] pour quitter.", password=True)
+    calm_exit()
 
 
 if __name__ == "__main__":

@@ -170,7 +170,7 @@ def main():
         calm_exit()
     print("Traitement des notes...")
     handle_notes(notesRes['data'])
-    print("[reverse green]Terminé.[/] Pressez [reverse]ENTER[/] pour quitter.", password=True)
+    print("[reverse green]Terminé.[/] Pressez [reverse]ENTER[/] pour quitter.")
     calm_exit()
 
 

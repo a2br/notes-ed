@@ -1,5 +1,6 @@
 import locale
 import os
+import sys
 
 from rich import print
 from rich.console import Console
@@ -16,11 +17,13 @@ def calm_exit():
     console.input(password=True)
     exit()
 
+
 def get_credentials():
     # Récupère le nom d'utilisateur
     username = ""
-    if os.path.isfile("username.txt"):
-        with open("username.txt") as file:
+    usernamePath = sys.argv[0] + "\\..\\username.txt"
+    if os.path.isfile(usernamePath):
+        with open(usernamePath) as file:
             username = file.readline()
     if not username:
         username = console.input("Identifiant: ")

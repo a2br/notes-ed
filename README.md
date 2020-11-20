@@ -31,7 +31,7 @@ Le script ne marche qu'avec les comptes `E` (Eleve). Les comptes familles ne son
 ```console
 $ py ./main.py
 ```
-![Démo](https://i.ibb.co/6rn35q2/notes-ed-demo.gif)
+![Démo](https://i.ibb.co/c34xvYT/notes-ed-demo-2.gif)
 
 #### Remplir automatiquement le nom d'utilisateur
 Il y a une option pour vous éviter de toujours ré-entrer votre nom d'utilisateur. Pour l'utiliser, créez un fichier appelé `username.txt` à la racine du projet. Entrez-y votre nom d'utilisateur. C'est tout ! Maintenant, il ne vous faudra qu'entrer votre mot de passe pour accéder à vos statistiques.

@@ -1,11 +1,12 @@
-from getpass import getpass
 import locale
+import os
 
-from requests import request as req
 from rich import print
 from rich.console import Console
 from rich.table import Table
 import inquirer
+
+import ecoledirecte as ed
 
 locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
 console = Console()
@@ -15,34 +16,29 @@ def calm_exit():
     console.input(password=True)
     exit()
 
+def get_credentials():
+    # Récupère le nom d'utilisateur
+    username = ""
+    if os.path.isfile("username.txt"):
+        with open("username.txt") as file:
+            username = file.readline()
+    if not username:
+        username = console.input("Identifiant: ")
+    else:
+        print(f"Connexion en tant que [bold]{username}[/]")
+    # Récupère le mot de passe
+    password = console.input("Mot de passe: ", password=True)
+    # Retourne les valeurs
+    return username, password
+
+
 # Crée un menu de sélection
-
-
 def choose(message: str, choices: list):
     questions = [
         inquirer.List('a', message, choices)
     ]
     answer = inquirer.prompt(questions)['a']
     return answer
-
-
-# Se connecte à EcoleDirecte
-def login(username: str, password: str, token: str = None):
-    payload = 'data={ "identifiant": "' + username + \
-              '", "motdepasse": "' + password + '", "acceptationCharte": true }'
-    try:
-        response = req(
-            "POST", "https://api.ecoledirecte.com/v3/login.awp", data=payload).json()
-        token = response['token'] or token
-        return response, token
-    except Exception as exception:
-        if type(exception).__name__ == "ConnectionError":
-            print("[reverse bold red]La connexion a échoué[/]")
-            print("[red]Vérifiez votre connexion Internet.[/]")
-        else:
-            print("[reverse bold red]Une erreur inconnue est survenue.[/]")
-        calm_exit()
-
 
 # Sélectionne ou demande le compte à retourner
 def select_account(accounts: list):
@@ -70,16 +66,6 @@ def select_account(accounts: list):
     account = next(filter(lambda account: (
         str(account['id']) == choice[0:4]), e_accounts))
     return account
-
-
-# Récupère les notes
-def fetch_notes(account, token: str):
-    payload = 'data={"token": "' + token + '"}'
-    response = req("POST", "https://api.ecoledirecte.com/v3/eleves/" +
-                   str(account['id']) + "/notes.awp?verbe=get&", data=payload).json()
-    token = response['token'] or token
-    return response, token
-
 
 # Affiche la moyenne pour chaque période (et chaque matière)
 def handle_notes(data):
@@ -152,10 +138,9 @@ def handle_notes(data):
 
 
 def main():
-    username = input("Identifiant: ")
-    password = getpass("Mot de passe: ")
+    username, password = get_credentials()
     print("Connexion...")
-    loginRes, token = login(username, password)
+    loginRes, token = ed.login(username, password)
     if not token:
         print(loginRes['message'])
         calm_exit()
@@ -164,7 +149,7 @@ def main():
     print(f"[blue]Bonjour, [bold]{account['prenom']}[/].[/]")
 
     print("Collecte des notes...")
-    notesRes, token = fetch_notes(account, token)
+    notesRes, token = ed.fetch_notes(account, token)
     if notesRes['code'] != 200:
         print(notesRes['message'])
         calm_exit()

@@ -136,8 +136,10 @@ def handle_notes(data):
                                   f"#{str(matiere['rang']).zfill(2)}")
             moyenne_periode = notes_periode / diviseur_periode
             table.add_row("GENERAL", "0", str(round(moyenne_periode * 20, 1)),
-                          str(round((notes_list[round((len(notes_list) - 1) / 2)]) * 20, 2)), "#00", style='red')
+                          str(round((notes_list[round((len(notes_list) - 1) / 2)]) * 20, 1)), "#00", style='red')
             console.print(table)
+            print("Moyenne exacte:", moyenne_periode * 20)
+            print()
 
 
 def main():

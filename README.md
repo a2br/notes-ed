@@ -43,3 +43,6 @@ Le script, pour chaque matière (et la section générale), montrera :
 - la moyenne (arithmétique pondérée), la même qui figurera dans le bulletin
 - la note médiane : vous avez autant de notes plus hautes et plus basses qu'elle
 - le rang par rapport au reste de la classe : une valeur qui n'est pas affichée par EcoleDirecte. Si `#00`, le rang est inconnu ou incalculable
+
+## Autres outils ED
+Allez jeter un oeil à [`archive-ed`](https://github.com/a2br/archive-ed/), il permet de sauvegarder vos statistiques, même quand vos notes ne sont plus accessibles !

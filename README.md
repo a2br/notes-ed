@@ -27,7 +27,7 @@ $ git pull
 
 ## Utilisation
 
-Le script ne marche qu'avec les comptes `E` (Eleve). Les comptes familles ne sont pas supportés. Ouvrez le script depuis le terminal ou en cliquant sur l'icône dans le File Explorer.
+Le script ne marche qu'avec les comptes `E` (Eleve). Les comptes famille ne sont pas supportés. Ouvrez le script depuis le terminal ou en cliquant sur l'icône dans le File Explorer.
 ```console
 $ py ./main.py
 ```
@@ -45,4 +45,9 @@ Le script, pour chaque matière (et la section générale), montrera :
 - le rang par rapport au reste de la classe : une valeur qui n'est pas affichée par EcoleDirecte. Si `#00`, le rang est inconnu ou incalculable
 
 ## Autres outils ED
-Allez jeter un oeil à [`archive-ed`](https://github.com/a2br/archive-ed/), il permet de sauvegarder vos statistiques, même quand vos notes ne sont plus accessibles !
+
+### Python
+[`archive-ed`](https://github.com/a2br/archive-ed/) permet de sauvegarder vos notes, même quand elles ne sont plus accessibles ! Le développement est mis sur pause pour le moment, les fonctionnalités sont limitées.
+
+### JavaScript / TypeScript
+[`ecoledirecte.js`](https://github.com/a2br/ecoledirecte.js) ([npm](https://npmjs.com/package/ecoledirecte.js)) est un module Node permettant d'interagir avec EcoleDirecte depuis Node.js. Il est basé sur [`ecoledirecte-api-types`](https://github.com/a2br/ecoledirecte-api-types) ([npm](https://npmjs.com/package/ecoledirecte-api-types)), qui regroupe les types de l'API EcoleDirecte. Son utilisation est recommandée si vous construisez un project avec TypeScript.

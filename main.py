@@ -67,7 +67,12 @@ def select_account(accounts: list):
         calm_exit()
 
     account = next(filter(lambda account: (
-        str(account['id']) == choice[0:4]), e_accounts))
+        str(account['id']) == choice[0:4]), e_accounts), None)
+    if not account:
+        # Aucun compte supporté
+        print("[reverse bold red]Aucun compte compatible trouvé[/]")
+        print("[red]Essayez de vous connecter avec un compte Elève.[/]")
+        calm_exit()
     return account
 
 # Affiche la moyenne pour chaque période (et chaque matière)

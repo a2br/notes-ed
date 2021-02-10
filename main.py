@@ -95,13 +95,14 @@ def handle_notes(data):
                                               (note['codeMatiere'] == matiere['codeMatiere']), notes))
             for note in notesM:
                 try:
-                    notes_matiere += (locale.atof(note['valeur']) / locale.atof(note['noteSur'])) * \
-                        locale.atof(note['coef'])
-                    diviseur_matiere += locale.atof(note['coef'])
-                    notes_list.append(locale.atof(
-                        note['valeur']) / locale.atof(note['noteSur']))
-                    notes_list_matiere.append(locale.atof(
-                        note['valeur']) / locale.atof(note['noteSur']))
+                    if not note["nonSignificatif"]:
+                        notes_matiere += (locale.atof(note['valeur']) / locale.atof(note['noteSur'])) * \
+                            locale.atof(note['coef'])
+                        diviseur_matiere += locale.atof(note['coef'])
+                        notes_list.append(locale.atof(
+                            note['valeur']) / locale.atof(note['noteSur']))
+                        notes_list_matiere.append(locale.atof(
+                            note['valeur']) / locale.atof(note['noteSur']))
                 except:
                     pass
 

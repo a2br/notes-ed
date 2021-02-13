@@ -1,6 +1,6 @@
 from requests import request as req
 from main import calm_exit
-
+from rich import print
 
 # Se connecte à EcoleDirecte
 def login(username: str, password: str, token: str = None):

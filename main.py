@@ -86,11 +86,15 @@ def handle_notes(data):
         notes_periode = 0  # Somme des notes de la période
         diviseur_periode = 0  # Somme des coefficients
         infos_matieres = {}
+        missing_subject_weight = False
 
         for matiere in matieres:
             notes_list_matiere = []
             notes_matiere = 0
             diviseur_matiere = 0
+            coef_matiere = float(matiere['coef']) or 1
+            if not float(matiere['coef']):
+                missing_subject_weight = True
             notesM = list(filter(lambda note: (note['codePeriode'] == periode['idPeriode']) and
                                               (note['codeMatiere'] == matiere['codeMatiere']), notes))
             for note in notesM:
@@ -111,13 +115,13 @@ def handle_notes(data):
 
             if diviseur_matiere:
                 moyenne_matiere = (notes_matiere / diviseur_matiere)
-                notes_periode += moyenne_matiere * float(matiere['coef'])
-                diviseur_periode += float(matiere['coef'])
+                notes_periode += moyenne_matiere * coef_matiere
+                diviseur_periode += coef_matiere
             infos_matieres[matiere['codeMatiere']] = {
                 'moyenne': moyenne_matiere if diviseur_matiere else None,
                 'mediane': notes_list_matiere[round((len(notes_list_matiere) - 1) / 2)] if notes_list_matiere else None,
                 'rang': matiere['rang'],
-                'coef': matiere['coef']
+                'coef': coef_matiere
             }
 
         notes_list.sort()
@@ -145,6 +149,8 @@ def handle_notes(data):
                           str(round((notes_list[round((len(notes_list) - 1) / 2)]) * 20, 1)), "#00", style='red')
             console.print(table)
             print("Moyenne exacte:", moyenne_periode * 20)
+            if missing_subject_weight:
+                print("Certaines matières de cette période n'avaient pas de coefficient. La moyenne générale générée est donc probablement erronée.")
             print()
 
 
